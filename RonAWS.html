@@ -68,6 +68,7 @@ img {
 </div>
 
 
+<p><em>last update October 24, 2015</em></p>
 <div id="summary" class="section level2">
 <h2>Summary</h2>
 <p>This is a brief description of how to setup a single AWS instance in order to execute R. Specifically, these instructions show how to install the caret package (an install which is a bit more complex than expected). We will:</p>
@@ -79,9 +80,22 @@ img {
 <li>setup your local computer to access RStudio via a web browser</li>
 <li>setup an SSH client and SCP client application to transfer files</li>
 </ul>
+<p>At some point in the future I’ll try to setup a cluster of R servers to see how well (and how to configure) such a task.</p>
+<div id="references" class="section level3">
+<h3>References</h3>
+<ul>
+<li><a href="https://www.kaggle.com/forums/f/15/kaggle-forum/t/4092/how-to-tune-rf-parameters-in-practice" class="uri">https://www.kaggle.com/forums/f/15/kaggle-forum/t/4092/how-to-tune-rf-parameters-in-practice</a></li>
+<li><a href="https://blogs.aws.amazon.com/bigdata/post/Tx3IJSB6BMHWZE5/Running-R-on-AWS" class="uri">https://blogs.aws.amazon.com/bigdata/post/Tx3IJSB6BMHWZE5/Running-R-on-AWS</a></li>
+<li><a href="http://www.r-bloggers.com/instructions-for-installing-using-r-on-amazon-ec2/" class="uri">http://www.r-bloggers.com/instructions-for-installing-using-r-on-amazon-ec2/</a></li>
+<li><a href="http://www.stat.yale.edu/~jay/EC2/CreateFromScratch.html" class="uri">http://www.stat.yale.edu/~jay/EC2/CreateFromScratch.html</a></li>
+</ul>
+</div>
+<div id="some-warnings-and-notes" class="section level3">
+<h3>Some Warnings and Notes</h3>
 <p>WARNING: do not leave one of these large instances running for longer than you need (my runs were from about 37 minutes up to about an 1.5 hours). For the instance type I describe below will cost about $6 to $8 USD per run of caret</p>
 <p>NOTE: after you setup your EC2 instance with RStudio and you shut it down and restart it, then occassionally RStudio server will not start. If this happens, then you will not be able to attach your web browswer to the instanace. To fix this, use your SSH client to attached to the instance and explicity start the service like so:</p>
 <pre class="r"><code>&gt; sudo rstudio-server start</code></pre>
+</div>
 </div>
 <div id="setup-steps" class="section level2">
 <h2>Setup Steps</h2>
@@ -231,6 +245,12 @@ Resampling results across tuning parameters:
 
 Accuracy was used to select the optimal model using  the largest value.
 The final value used for the model was mtry = 12. </code></pre>
+<p>Finally, A comparison of using default parallel support versus doParallel with cores = 12 (to attain 75% CPU load) versus cores = 16 (to attain 99% CPU load) for a given train run on a AWS Linux image on r3.4xlarge (16 vcpu’s and 122 Gbyte Ram).</p>
+<ul>
+<li>default parallel (uses 1/2 available cores) will drive the instance to avg 50% CPU load</li>
+<li>registerDoParallel(cores = 12) will drive the instance to an average of 75% CPU load and take 37 minutes to complete the train function</li>
+<li>registerDoParallel(cores = 16) will drive the instance to an average of 99.7% CPU load and take 34 minutes to complete the train function</li>
+</ul>
 </div>
 
 
